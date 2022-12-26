@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	url := ""
+	url := "https://www.thepaper.cn/"
 	resp, err := http.Get(url)
 
 	if err != nil {
