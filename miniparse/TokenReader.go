@@ -14,6 +14,13 @@ type SimpleTokenReader struct {
 	pos int
 }
 
+func NewTokenReader(tokens []Token) *SimpleTokenReader {
+	return &SimpleTokenReader{
+		tokens: tokens,
+		pos: 0,
+	}
+}
+
 func (str *SimpleTokenReader) Read() Token {
 
 }
