@@ -1,3 +1,4 @@
+/*
 package main
 
 import (
@@ -5,7 +6,7 @@ import (
 )
 
 func main() {
-	/*多路复用器会对url请求进行检查, 并将它*/
+	//多路复用器会对url请求进行检查, 并将它
 	mux := http.NewServeMux()				//首先创建一个多路复用器
 	files := http.FileServer(http.Dir("/public"))
 	mux.Handle("/static/", http.StripPrefix("/static/", files))
@@ -18,6 +19,13 @@ func main() {
 	}
 	server.ListenAndServe()
 }
+
+func index(writer http.ResponseWriter, request *http.Request) {
+	files := []string {
+		""
+	}
+}
+*/
 
 
 
