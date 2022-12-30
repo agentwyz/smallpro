@@ -12,4 +12,7 @@ func NewToken(_type TokenType, text []rune) *Token {
 	}
 }
 
+func NullToken() Token {
+
+}
 
