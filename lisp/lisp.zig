@@ -186,8 +186,10 @@ pub fn do_lt() LispError!*atom {
 }
 
 pub fn do_get() LispError!*atom {
-    
+
 }
+
+
 
 
 
