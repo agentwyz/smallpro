@@ -85,7 +85,35 @@ const env = struct {
 };
 
 const atom = union(enum) {
-    
+    sym: std.ArrayList(u8),
+    bool: bool,
+    num: i64,
+    str: std.ArrayList(u8),
+    lambda: lambda,
+    func: *const function,
+    quote: ?*atom,
+    cell: cell,
+    none: ?void,
+
+    const Self = @This();
+
+    pub fn init(a: std.mem.Allocator) !*atom {
+        return try a.create(atom);
+    }
+
+    pub fn copy(self: *Self, a: std.mem.Allocator) !*Self {
+        var n = try atom.init(a);
+        n.* = self.*;
+        return n;
+    }
+
+    pub fn deinit(self: *Self, a: std.mem.Allocator, final: bool) void {
+        switch (self.*) {
+            .sym => |v| v.deinit(),
+            .str => |v| v.deinit(),
+            
+        }
+    }
 };
 
 
