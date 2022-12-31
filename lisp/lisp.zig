@@ -111,9 +111,36 @@ const atom = union(enum) {
         switch (self.*) {
             .sym => |v| v.deinit(),
             .str => |v| v.deinit(),
-            
+            .lambda => |v| {
+
+            },
+            .cell => |v| {
+                if (!final) {
+                    return;
+                }
+                if (v.car != null) {
+                    v.car.?.deinit(a, final);
+                    self.cell.car = null;
+                }
+                if (v.cdr != null) {
+                    v.cdr.?.deinit(a, final);
+                    self.cell.cdr = null;
+                }
+            },
+            .quote => |v| {
+                if (final) {
+                    v.?.deinit(a, true);
+                }
+            },
+            .bool => {},
+            .num => {},
+            .func => {},
+            .none => {},
         }
+        a.destroy(self);
     }
+
+    
 };
 
 
