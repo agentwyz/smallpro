@@ -170,9 +170,16 @@ pub fn do_add() LispError!*atom {
 }
 
 pub fn do_sub(e: *env, a: std.mem.Allocator, args: *atom) LispError!*atom {
-    
+
 }
 
+pub fn do_mut() LispError! *atom {
+
+}
+
+pub fn do_mul() LispError!*atom {
+    
+}
 
 
 
