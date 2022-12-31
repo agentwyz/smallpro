@@ -51,7 +51,26 @@ const env = struct {
     }
 
     pub fn child(self: *Self) Self {
-        
+        var c = Self {
+            .a = self.a,
+            .v = std.StringArrayHashMap(*atom).init(self.a),
+            .p = self,
+            .err = null,
+        };
+        return c;
+    }
+
+    //主要用来释放
+    pub fn deinit(self: *Self) void {
+        self.v.clearAndFree();
+        self.v.deinit();
+        if (self.err != null) {
+            self.a.free(self.err.?);
+        }
+    }
+
+    pub fn raise(self: *Self, msg: []const u8) LispError!void {
+        self.err = try self.a.dupe(u8, mag);
     }
 }
 
