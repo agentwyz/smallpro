@@ -140,8 +140,38 @@ const atom = union(enum) {
         a.destroy(self);
     }
 
-    
+    pub fn println(self: @This, w: anytype, quoted: bool) LispError!void {
+        try self.print(w, quoted);
+        try w.writeByte('\n');
+    }
+
+    pub fn print(self: @This(), w: anytype, quoted: bool) LispError!void {
+        try w.writeByte('\n');
+        try self.print(w, quoted);
+    }
+
+    pub fn printc(self: @This, w: anytype, quoted: bool) LispError!void {
+        switch (self) {
+
+        }
+    }
 };
+
+fn debug(arg: *atom) !void {
+    try arg.println(std.io.getStdOut().writer(), false);
+}
+
+fn eval() LispError!*atom {
+
+}
+
+pub fn do_add() LispError!*atom {
+
+}
+
+pub fn do_sub(e: *env, a: std.mem.Allocator, args: *atom) LispError!*atom {
+    
+}
 
 
 
