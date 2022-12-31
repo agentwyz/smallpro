@@ -28,7 +28,7 @@ const env = struct {
     pub fn init(a: std.mem.Allocator) Self {
         return Self {
             .a = a,
-            .v = std.
+            .v = std.StringArrayHashMap(*atom).init(a),
             .p = null,
             .err = null
         };
@@ -60,7 +60,7 @@ const env = struct {
         return c;
     }
 
-    //主要用来释放
+    //deinit resource
     pub fn deinit(self: *Self) void {
         self.v.clearAndFree();
         self.v.deinit();
@@ -71,6 +71,24 @@ const env = struct {
 
     pub fn raise(self: *Self, msg: []const u8) LispError!void {
         self.err = try self.a.dupe(u8, mag);
+        return error.RuntimeError;
     }
-}
+
+    pub fn printterr(self: *Self, err: anyerror) !void {
+        if (self.err != null) {
+            try std.io.getStdErr().writer().print("{}: {s}\n", .{err, self.err.?});
+            self.err = null;
+        } else {
+            try std.io.getStdErr().writer().print("{}\n", .{err});
+        }
+    }
+};
+
+const atom = union(enum) {
+    
+};
+
+
+
+
 
