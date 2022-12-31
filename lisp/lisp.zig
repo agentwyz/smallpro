@@ -178,8 +178,14 @@ pub fn do_mut() LispError! *atom {
 }
 
 pub fn do_mul() LispError!*atom {
-    
+
 }
+
+pub fn do_lt() LispError!*atom {
+
+}
+
+
 
 
 
