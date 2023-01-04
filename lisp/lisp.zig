@@ -159,7 +159,8 @@ const atom = union(enum) {
         try w.writeByte('\n');
         try self.print(w, quoted);
     }
-
+    
+    //这个函数向命令行打印
     pub fn printc(self: @This, w: anytype, quoted: bool) LispError!void {
         switch (self) {
             .none => try w.writeAll("null"),
@@ -170,7 +171,7 @@ const atom = union(enum) {
                     for (v.items) |c| {
                         switch (c) {
                             '\\' => try w.writeAll("\\\\"),
-                            '"' => try w.writeAll("\\\\"),
+                            '"' => try w.writeAll("\\\""),
                             '\n' => try w.writeAll("\\n"),
                             '\r' => try w.writeAll("\\r"),
                             else => try w.writeByte(c),
@@ -234,15 +235,85 @@ fn debug(arg: *atom) !void {
     try arg.println(std.io.getStdOut().writer(), false);
 }
 
-fn eval() LispError!*atom {
+//计算参数
+fn eval(e: *env, a: std.mem.Allocator, root: *atom) LispError!*atom {
+    var arg: ?*atom = root;
 
+    return switch (arg.?.*) {
+        atom.sym => |v| blk: {
+            var p = e;
+            while (true) {
+                if (p.v.get(v.items)) |ev| {
+                    break :blk try eval(e, a, ev);
+                }
+                if (p.p == null) {
+                    break;
+                }
+                p = p.p.?;
+            }
+            try e.raise("invalid symbol");
+        },
+        
+        atom.str => |v| blk: {
+            var bytes = std.ArrayList(u8).init(a);
+            try bytes.writer().writeAll(v.items);
+            var na = try atom.init(a);
+            na.* = atom{
+                .str = bytes,
+            };
+            break :blk na;
+        },
+
+        atom.lambda => try arg.?.copy(a),
+
+        atom.cell => blk: {
+            var last = arg.?;
+            while (true) {
+                last = try switch(arg.?.cell.car.?.*) {
+                    atom.lambda => {
+
+                    },
+                    atom.sym => {
+
+                    }
+                }
+            }
+        }
+    }    
 }
 
-pub fn do_add() LispError!*atom {
+pub fn do_add(e: *env, a: std.mem.Allocator, args: *atom) LispError!*atom {
+    //计算加法
+    var arg = args;
+    var num: i64 = 0;
 
+    while (true) {
+        var val = try eval(e, a, arg.cell.car.?);
+        defer val.deinit(a, false);
+        if (val.* == atom.num) {
+            num += val.num;
+        } else {
+            try e.raise("invalid type for +");
+        }
+        if (arg.cell.cdr == null) {
+            var na = try atom.init(a);
+            na.* = atom{
+                .num = num,
+            };
+            return na;
+        }
+        arg = arg.cell.cdr.?;
+    }
+    unreachable;
 }
 
 pub fn do_sub(e: *env, a: std.mem.Allocator, args: *atom) LispError!*atom {
+    var arg = args;
+    var val = try eval(e, a, arg.cell.car.?);
+    //错误
+    if (val.* != atom.num) {
+        try e.raise("invalid type for");
+    }
 
 }
 
