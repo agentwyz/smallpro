@@ -92,7 +92,7 @@ const atom = union(enum) {
     lambda: lambda,
     func: *const function,
     quote: ?*atom,
-    cell: cell,
+    cell: cell, //这个cell会
     none: ?void,
 
     const Self = @This();
@@ -112,7 +112,17 @@ const atom = union(enum) {
             .sym => |v| v.deinit(),
             .str => |v| v.deinit(),
             .lambda => |v| {
-
+                if (!final) {
+                    return;
+                }
+                if (v.cell.car != null) {
+                    v.cell.car.?.deinit(a, final);
+                    self.cell.car = null;
+                }
+                if (v.cell.cdr != null) {
+                    v.cell.cdr.?.deinit(a, final);
+                    self.cell.cdr = null;
+                }
             },
             .cell => |v| {
                 if (!final) {
@@ -152,7 +162,70 @@ const atom = union(enum) {
 
     pub fn printc(self: @This, w: anytype, quoted: bool) LispError!void {
         switch (self) {
-
+            .none => try w.writeAll("null"),
+            .sym => |v| try w.writeAll(v.items),
+            .str => |v| {
+                if (quoted) {
+                    try w.writeByte('"');
+                    for (v.items) |c| {
+                        switch (c) {
+                            '\\' => try w.writeAll("\\\\"),
+                            '"' => try w.writeAll("\\\\"),
+                            '\n' => try w.writeAll("\\n"),
+                            '\r' => try w.writeAll("\\r"),
+                            else => try w.writeByte(c),
+                        }
+                    }
+                    //尝试输出有右边的"
+                    try w.writeByte('"');
+                } else {
+                    try w.writeAll(v.items);
+                }
+            },
+            .func => |v| try w.writeByte(v.name),
+            .bool => |v| {
+                if (v) {
+                    try w.writeAll("T");
+                } else {
+                    try w.write("nil");
+                }
+            },
+            .num => |v| try w.print("{}", .{v}),
+            .lambda => |v| {
+                try w.writeAll("(lambda");
+                try v.cell.cdr.?.cell.car.?.cell.cdr.?.princ(w, quoted);
+                try w.writeByte(' ');
+                try v.cell.cdr.?.cell.car.?.princ(w, quoted);
+                try w.writeByte(')');
+            },
+            .cell => |v| {
+                try w.writeByte('(');
+                try v.car.?.princ(w, false);
+                try w.writeByte(' ');
+                if (v.cdr == null) {
+                    return;
+                }
+                var a = v.cdr;
+                while (a != null) {
+                    if (a.?.cell.car == null) {
+                        break;
+                    }
+                    try a.?.cell.car.?.princ(w, quoted);
+                    if (a.?.cell.cdr == null) {
+                        break;
+                    }
+                    a = a.?.cell.cdr;
+                    if (a == null) {
+                        break;
+                    }
+                    try w.writeByte(' ');
+                }
+                try w.writeByte(')');
+            },
+            .qoute => |v| {
+                try w.writeByte('\x27');
+                try v.?.princ(w, quoted);
+            },
         }
     }
 };
