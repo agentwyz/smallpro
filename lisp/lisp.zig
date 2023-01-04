@@ -310,14 +310,29 @@ pub fn do_add(e: *env, a: std.mem.Allocator, args: *atom) LispError!*atom {
 pub fn do_sub(e: *env, a: std.mem.Allocator, args: *atom) LispError!*atom {
     var arg = args;
     var val = try eval(e, a, arg.cell.car.?);
-    //错误
+    //错误处理
     if (val.* != atom.num) {
         try e.raise("invalid type for");
     }
+    var num: i64 = val.num;
+    val.deinit(a, false);
+    
+    if (arg.cell.cdr == null) 
+    {
+        var na = try atom.init(a);
+        na.* = atom{
+            .num = num,
+        };
+        return na;
+    }
 
+    while (true) {
+        arg = arg.cell.cdr.?;
+
+    }
 }
 
-pub fn do_mut() LispError! *atom {
+pub fn do_mat() LispError! *atom {
 
 }
 
@@ -329,12 +344,28 @@ pub fn do_lt() LispError!*atom {
 
 }
 
-pub fn do_get() LispError!*atom {
+pub fn do_gt() LispError!*atom {
 
 }
 
+pub fn do_eq() LispError!*atom {
 
+}
 
+pub fn do_cond() LispError!*atom
+{
 
+}
 
+pub fn do_if() LispError!*atom 
+{
+
+} 
+
+pub fn do_seteq() LispError!*atom
+{
+
+}
+
+pub fn do_
 
