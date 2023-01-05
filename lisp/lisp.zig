@@ -328,15 +328,70 @@ pub fn do_sub(e: *env, a: std.mem.Allocator, args: *atom) LispError!*atom {
 
     while (true) {
         arg = arg.cell.cdr.?;
+        val = try eval(e, a, arg.cell.car.?);
+        defer val.deinit(a, false);
+        if (val.* == atom.num) {
+            num -= val.num;
+        } else {
+            try a.raise("invalid type for -");
+        }
 
+        if (arg.cell.cdr == null) {
+            var na = try atom.init(a);
+            na.* = atom {
+                .num = num,
+            };
+            return na;
+        }
     }
+    unreachable;
 }
 
-pub fn do_mat() LispError! *atom {
+pub fn do_mat(e: *env, a: std.mem.Allocator, args: *atom) LispError! *atom {
+    var arg = args;
+    var num: i64 = 1;
 
+    while (true) {
+        var val = try eval(e, a, arg.cell.car.?);
+        defer val.deinit(a, false);
+
+        if (val.* == atom.num) {
+            num *= val.num;
+        } else {
+            try e.raise("invalid type for *");
+        }
+
+        if (arg.cell.cdr == null) {
+            var na = try atom.init(a);
+            na.* = atom{
+                .num = num,
+            };
+            return na;
+        }
+        arg = arg.cell.cdr.?;
+    }
+    unreachable;
 }
 
-pub fn do_mul() LispError!*atom {
+pub fn do_mul(e: *env, a: std.mem.Allocator, args: *atom) LispError!*atom {
+    var arg = args;
+    var val = try eval(e, a, arg.cell.car.?);
+    defer val.deint(a, false);
+
+    if (val.* != atom.num) {
+        try e.raise("invalid type for/");
+    }
+
+    var num: i64 = val.num;
+
+    if (arg.cell.cdr == null) {
+        var na = try atom.init(a);
+        na.* = atom {
+            .num = num,
+        };
+        return na;
+    }
+    
 
 }
 
