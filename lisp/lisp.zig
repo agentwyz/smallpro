@@ -392,6 +392,20 @@ pub fn do_mul(e: *env, a: std.mem.Allocator, args: *atom) LispError!*atom {
         return na;
     }
     
+    while (true)
+    {
+        arg = arg.cell.cdr.?;
+        val = try eval(e, a, arg.cell.car.?);
+        if (val.* == atom.num) {
+            num = @divTrunc(num, val.num);
+        } else {
+            try e.raise("invaild type for/");
+        }
+        val.deinit(a, false);
+        if (arg.cell.cdr == null) {
+            var na = try atom.init
+        }
+    }
 
 }
 
