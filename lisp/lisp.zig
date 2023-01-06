@@ -403,14 +403,37 @@ pub fn do_mul(e: *env, a: std.mem.Allocator, args: *atom) LispError!*atom {
         }
         val.deinit(a, false);
         if (arg.cell.cdr == null) {
-            var na = try atom.init
+            var na = try atom.init(a);
+            na.* = atom {
+                .num = num,
+            };
+            return na;
         }
     }
-
+    unreachable;
 }
 
-pub fn do_lt() LispError!*atom {
+pub fn do_lt(e: *env, a: std.mem.Allocator, args: *atom) LispError!*atom {
+    var arg = args;
+    var lhs = try eval(e, a, arg.cell.car.?);
 
+    defer lhs.deinit(a, false);
+
+    if (lhs.* != atom.num) 
+    {
+        try e.raise("invalid type for <");
+    }
+    arg = arg.cell.cdr.?;
+    var rhs = try eval(e, a, arg.cell.car.?);
+    defer rhs.deinit(a, false);
+
+    if (rhs.* != atom.num)
+    {
+        try e.raise("invalid type for<");
+    }
+
+    arg = arg.cell.cdr.?;
+    var na = try atom.init();
 }
 
 pub fn do_gt() LispError!*atom {
