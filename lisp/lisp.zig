@@ -537,6 +537,18 @@ var builtins = [_] function {
     .{ .name = "lambda", .ptr = &do_lambda },
     .{ .name = "funcall", .ptr = &do_funcall },
     .{ .name = "concatenate", .ptr = &do_concatenate }
+};
 
+const SyntaxError = error{};
+const RuntimeError = error{};
+const ParseIntError = std.fmt.ParseIntError;
+const LispError = {
+    RuntimeError,
+    SyntaxError,
+    OutOfMemory,
+    
 }
+
+
+
 
