@@ -429,24 +429,74 @@ pub fn do_lt(e: *env, a: std.mem.Allocator, args: *atom) LispError!*atom {
 
     if (rhs.* != atom.num)
     {
-        try e.raise("invalid type for<");
+        try e.raise("invalid type for <");
     }
 
-    arg = arg.cell.cdr.?;
-    var na = try atom.init();
+    var na = try atom.init(a);
+    na.* = atom{
+        .bool = lhs.num < rhs.num,
+    };
+    return na;
 }
 
 pub fn do_gt() LispError!*atom {
+    var arg = args;
+    var lhs = try eval(e, a, arg.cell.car.?);
+    defer lhs.deinit(a, false);
 
+    if (lhs.* != atom.num)
+    {
+        try e.raise("invalid type for >");
+    }
+
+    arg = arg.cell.cdr.?;
+    var rhs = try eval(e, a, arg.cell.car.?);
+    defer rhs.deinit(a, false);
+
+    if (rhs.* != atom.num)
+    {
+        try e.raise("invalid type for >");
+    }
+
+    var na = try atom.init(a);
+    na.* = atom{
+        .bool = lhs.num > rhs.num,
+    };
+
+    return na;
 }
 
-pub fn do_eq() LispError!*atom {
+pub fn do_eq(e: *env, a: std.mem.Allocator, args: *atom) LispError!*atom {
+    var arg = args;
+    var lhs = try eval(e, a, arg.cell.car.?);
+    defer lhs.deinit(a, false);
 
+    if (lhs.* != atom.num)
+    {
+        try e.raise("invalid type for =");
+    }
+    arg = arg.cell.cdr.?;
+    var rhs = try eval(e, a, arg.cell.car.?);
+    defer rhs.deinit();
+
+    if (rhs.* != atom.num)
+    {
+        try e.raise("invalid type for =");
+    }
+
+    var na = try atom.init(a);
+    
+    na.* = atom{
+        .bool = lhs.num == rhs.num,
+    }
+
+    return na;
 }
 
-pub fn do_cond() LispError!*atom
+pub fn do_mod(e: *env, a: std.mem.Allocator, args: *atom) LispError!*atom
 {
-
+    var arg = args;
+    var lhs = try eval()
 }
 
 pub fn do_if() LispError!*atom 
@@ -459,5 +509,34 @@ pub fn do_seteq() LispError!*atom
 
 }
 
-pub fn do_
+pub fn do_printc() LispError!*atom {
+
+}
+
+pub fn do_print() LispError!*atom {
+
+}
+
+var builtins = [_] function {
+        .{ .name = "+", .ptr = &do_add },
+    .{ .name = "-", .ptr = &do_sub },
+    .{ .name = "*", .ptr = &do_mat },
+    .{ .name = "/", .ptr = &do_mul },
+    .{ .name = "<", .ptr = &do_lt },
+    .{ .name = ">", .ptr = &do_gt },
+    .{ .name = "=", .ptr = &do_eq },
+    .{ .name = "mod", .ptr = &do_mod },
+    .{ .name = "cond", .ptr = &do_cond },
+    .{ .name = "dotimes", .ptr = &do_dotimes },
+    .{ .name = "if", .ptr = &do_if },
+    .{ .name = "princ", .ptr = &do_princ },
+    .{ .name = "print", .ptr = &do_print },
+    .{ .name = "setq", .ptr = &do_setq },
+    .{ .name = "defun", .ptr = &do_defun },
+    .{ .name = "length", .ptr = &do_length },
+    .{ .name = "lambda", .ptr = &do_lambda },
+    .{ .name = "funcall", .ptr = &do_funcall },
+    .{ .name = "concatenate", .ptr = &do_concatenate }
+
+}
 
