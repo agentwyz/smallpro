@@ -546,7 +546,7 @@ const LispError = {
     RuntimeError,
     SyntaxError,
     OutOfMemory,
-    
+    EndOf
 }
 
 
