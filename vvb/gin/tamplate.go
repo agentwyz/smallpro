@@ -1,4 +1,4 @@
-package main
+package gin
 
 import (
 	"fmt"
@@ -32,4 +32,3 @@ func main() {
 		fmt.Printf("HTTP server start error failed, err %v", err)
 	}
 }
-
