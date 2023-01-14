@@ -6,10 +6,67 @@
     <title>Hello</title>
 </head>
 
+<script>
+function main() {
+
+}
+</script>
+
+
 <body>
-    <p>Hello{{.Name}} </p>
-    <p>age {{.Age}}</p>
-    <p>gender {{.Gender}}</p>
+    <div>从结构体中取值:<div>
+    <p>Hello: {{.u1.Name}} </p>
+    <p>age: {{.u1.Age}}</p>
+    <p>gender: {{.u1.Gender}}</p>
+    <p>{/*遇事不决, 先写注释*/}</p>
+    
+    <hr/>
+    <div>从map中进行取值<div>
+    <p>Hello: {{.m1.Name}} </p>
+    <p>age: {{.m1.Age}}</p>
+    <p>gender: {{.m1.Gender}}</p>
+    <p>{/*遇事不决, 先写注释*/}</p>
+    <p>{{$v1 := 100}}</p>
+
+    <hr>
+    <div>条件判断</div>
+    <p>
+       {{if $v1}}
+       {{$v1}}
+       {{else}}
+       啥都没有
+       {{end}}
+    </p>
+
+    <hr>
+    {{/*条件判断*/}}
+    <div>
+        {{if lt .m1.Age 22}}
+        好好学习
+        {{else}}
+        好好工作 
+        {{end}}
+    </div>
+    <hr/>
+    <div>遍历一个切片</div>
+    {{range $index, $hobby :=  .hobby}}
+        <p>idx: {{$index}} - {{$hobby}}</p>
+        {{else}}
+        没啥爱好
+    {{end}}
+
+    <hr/>
+    <div>局部的作用域</div>
+    
+    <div>{{with .m1}}
+    <p>{{.Name}}</p>
+    <p>{{.Age}}</p>
+    <p>{{.Gender}}</p>
+    {{end }}
+    </div>
+
+    <hr/>
+    {{index .hobby 2}}
 </body>
 
 

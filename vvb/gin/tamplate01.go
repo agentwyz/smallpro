@@ -28,7 +28,24 @@ func sayHello(w http.ResponseWriter, r *http.Request) {
 		Age: 0,
 	}
 
-	err = tampl.Execute(w, u1)
+	//创建一个map
+	m1 := map[string] interface{} {
+		"Name": "小王子",
+		"Gender": "男",
+		"Age": 18,
+	}
+	
+	hobbylist := []string {
+		"篮球",
+		"足球",
+		"双色球",
+	}
+	//一种很骚的操作
+	err = tampl.Execute(w, map[string] interface{}{
+		"u1": u1,
+		"m1": m1,
+		"hobby": hobbylist,
+	})
 
 	if err != nil {
 		fmt.Printf("falied to execute %v", err)
