@@ -1,4 +1,3 @@
-/*
 package main
 
 import (
@@ -25,7 +24,7 @@ func index(writer http.ResponseWriter, request *http.Request) {
 		""
 	}
 }
-*/
+
 
 
 

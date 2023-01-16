@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+
+<head>
+<title>模版继承</title>
+
+<style>
+    *{
+        margin: 0;
+    }
+    .nav {
+        height: 50px;
+        width: 100%;
+        position: fixed;
+        top: 0px;
+        background-color: blue;
+    }
+    .main {
+        margin-top: 50px;
+    }
+    .menu {
+        width: 20px;
+        height: 100%;
+        position: fixed;
+        left: 0;
+        background-color: red;
+    }
+</style>
+
+</head>
+
+<body>
+
+<div class="nav">
+</div>
+
+<div class="main">
+    <div class="menu">
+        <div class="content">
+            <h3>{{.}}</h3>
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>
