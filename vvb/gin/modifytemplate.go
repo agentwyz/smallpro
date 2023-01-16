@@ -24,17 +24,33 @@ func index(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("execute template failed, err:%v\n", err)
 		return
 	}
-	
+
 }
 
+func xss(w http.ResponseWriter, r *http.Request) {
+	//解析模版
+	//解析模版之前定义一个自定义的函数safe
+	t, err := template.New("o.tmpl").Funcs(template.FuncMap{
+		"safe": func(s string) template.HTML{
+			return template.HTML(s)
+		},
+	}).ParseFiles("./o.tmpl")
+
+	if err != nil {
+		fmt.Printf("%v", err)
+	}
+	//渲染模版
+	//这里防止跨站脚本攻击
+	str := "<script>alert(\"嘿嘿\")</script>"
+	t.Execute(w, str)
+}
 
 func main() {
-	http.HandleFunc("/index", index)
+	http.HandleFunc("/index", xss)
 	err := http.ListenAndServe(":9090", nil)
 
 	if err != nil {
 		fmt.Println("HTTP server failed, err:%v", err)
 		return
 	}
-
 }
