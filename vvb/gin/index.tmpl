@@ -1,7 +1,15 @@
-{{/*继承根模板*/}}
-{{template "base.tmpl" .}}
-{{/*重新定义块模板*/}}
-{{define "content"}}
-    <h1>这是home2页面</h1>
-    <p>Hello {{ . }}</p>
-{{end}}
+<!DOCTYPE HTML>
+
+
+<html lang="zh-CN">
+
+<head>
+    <link rel="stylesheet" href="/css/index.css"></link>
+    <script src = "/css/index.js"></script>
+</head>
+    
+<body>
+    <p>{{.data | safe}}</p>
+</body>
+
+</html>
