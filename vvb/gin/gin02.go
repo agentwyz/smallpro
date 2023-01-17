@@ -1,21 +1,21 @@
-package main
+// package main
 
-import (
-	"net/http"
+// import (
+// 	"net/http"
 
-	"github.com/gin-gonic/gin"
-)
+// 	"github.com/gin-gonic/gin"
+// )
 
-func main() {
-	route := gin.Default()
+// func main() {
+// 	route := gin.Default()
 	
-	route.Static("/font", "./statics/assets/")
+// 	route.Static("/font", "./statics/assets/")
 
-	route.LoadHTMLFiles("./index.html")
+// 	route.LoadHTMLFiles("./index.html")
 	
-	route.GET("/index" ,func (context *gin.Context)  {
-		context.HTML(http.StatusOK, "index.html", nil)
-	})
+// 	route.GET("/index" ,func (context *gin.Context)  {
+// 		context.HTML(http.StatusOK, "index.html", nil)
+// 	})
 
-	route.Run(":9090")
-}
+// 	route.Run(":9090")
+// }
