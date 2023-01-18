@@ -2,7 +2,6 @@ package main
 
 import (
 	"net/http"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -16,11 +15,21 @@ func main() {
 	})
 
 	//登陆使用POST进行提交
-	router.POST("/page", func(context *gin.Context) {
+	router.POST("/login", func(context *gin.Context) {
 		//得到数据
-		username := context.PostForm("username")
+		//设置默认值
+		//context.DefaultPostForm("")
+		
+		//username := context.PostForm("username")
+		username, ok := context.GetPostForm("username")
+		if !ok {
+			username = "sb"
+		}
+
+
 		password := context.PostForm("pssword")
 
+		
 		context.HTML(http.StatusOK, "page.html", gin.H{
 			"username": username,
 			"password": password,
