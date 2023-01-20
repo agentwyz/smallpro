@@ -2,6 +2,8 @@ package main
 
 import (
 	"net/http"
+	"runtime"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,7 +22,7 @@ func main() {
 			"age": age,
 		})
 	})
-
+	runtime.Error
 
 	router.GET("/blog/:year/:month", func (context *gin.Context)  {
 		year := context.Param("year")
