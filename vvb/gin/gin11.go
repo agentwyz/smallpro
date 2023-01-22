@@ -8,8 +8,12 @@ import (
 )
 
 func indexHandler(c *gin.Context) {
+	name, ok := c.Get("name")
+	if !ok {
+		name = "匿名用户"
+	}
 	c.JSON(http.StatusOK, gin.H{
-		"msg": "index",
+		"msg": name,
 	})
 }
 
@@ -28,6 +32,12 @@ func m1(c *gin.Context) {
 	fmt.Println("m1 out...")
 }
 
+func m2(ctx *gin.Context) {
+	fmt.Println("m2 in...")
+	ctx.Set("name", "qimi")	//实现跨中间件去取值
+	fmt.Println("m2 out ...")
+}
+
 //定义登陆中间件
 // func register(c *gin.Context) {
 
@@ -37,7 +47,7 @@ func m1(c *gin.Context) {
 func authMiddleware(doCheck bool) gin.HandlerFunc {
 	//连接数据库
 	//或者一些其它准备工作
-	return func(c *gin.Comtext) {
+	return func(c *gin.Context) {
 		if doCheck {
 			//存放具体的逻辑
 			//是否登陆的判断
@@ -55,7 +65,13 @@ func authMiddleware(doCheck bool) gin.HandlerFunc {
 
 func main() {
 	router := gin.Default()
+	//r := gin.New() 默认使用logger()和recovery()中间件
 	
+
+
+	//默认使用两个中间件
+	router.Use(m1, m2, authMiddleware(true))
+
 	router.GET("/index", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{
 			"msg": "index",
@@ -74,26 +90,30 @@ func main() {
 		})
 	})
 
-	router.GET("/user", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{
-			"msg": "user",
-		})
-	})
+	// router.GET("/user", func(ctx *gin.Context) {
+	// 	ctx.JSON(http.StatusOK, gin.H{
+	// 		"msg": "user",
+	// 	})
+	// })
 
-	xxGroup := router.Group("/xx", authMiddleware(true))
-	{
-		xxGroup.GET("/index", func(ctx *gin.Context) {
-			ctx.JSON(http.StatusOK, gin.H{
-				"msg": "xxgroup",
-			})
-		})
-	}
+	// xxGroup := router.Group("/xx", authMiddleware(true))
+	// {
+	// 	xxGroup.GET("/index", func(ctx *gin.Context) {
+	// 		ctx.JSON(http.StatusOK, gin.H{
+	// 			"msg": "xxgroup",
+	// 		})
+	// 	})
+	// }
 	
-	//路由注册中间件
-	xx2Group := router.Group("/xx2")
-	xx2Group.Use(authMiddleware(true))
-	{
-		xx2Group.GET()
-	}
+	// //路由注册中间件
+	// xx2Group := router.Group("/xx2")
+	// xx2Group.Use(authMiddleware(true))
+	// {
+	// 	xx2Group.GET("/index", func(ctx *gin.Context) {
+	// 		ctx.JSON(http.StatusOK, gin.H{
+	// 			"msg": "xx2Group",
+	// 		})
+	// 	})
+	// }
 	router.Run(":9090")
 }
