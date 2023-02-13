@@ -1,11 +1,13 @@
 const std = @import("std");
 
 const cell = struct {
+    //lisp语言的两个基本操作
     car: ?*atom,
     cdr: ?*atom,
 };
 
 const lambda = struct {
+    //lambda是函数表达式, 函数表达式
     e: ?*env,
     cell: cell,
 };
@@ -540,8 +542,11 @@ var builtins = [_] function {
 };
 
 const SyntaxError = error{};
+
 const RuntimeError = error{};
+
 const ParseIntError = std.fmt.ParseIntError;
+
 const LispError = {
     RuntimeError,
     SyntaxError,

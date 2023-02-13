@@ -3,18 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
-	//"os"
+	"os"
 )
 
 func main() {
-	// contents, err := os.ReadFile("test.txt")
-
-	// if err != nil {
-	// 	fmt.Println("File reading error", err)
-	// 	return
-	// }
-
-	// fmt.Printf("contents of file %s", string(contents))
 	readC()
 }
 
@@ -26,4 +18,15 @@ func readC() {
 	fptr := flag.String("fpath", "test.txt", "file path to read from")
 	flag.Parse()
 	fmt.Println("value of fpath is", *fptr)
+}
+
+func readFile() {
+	contents, err := os.ReadFile("test.txt")
+
+	if err != nil {
+		fmt.Println("File reading error", err)
+		return
+	}
+
+	fmt.Printf("contents of file %s", string(contents))
 }
